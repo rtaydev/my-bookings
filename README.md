@@ -117,6 +117,9 @@ Good luck!
 4. **Linting and Formatting**
    - Added ESLint and Prettier configurations to ensure code consistency and maintainability.
 
+5. **Testing**
+   - Added basic unit tests for the components and reducers to ensure the app's functionality.
+
 ### Dependencies Added
 
 - `react-native-qrcode-svg`: For generating QR codes.
