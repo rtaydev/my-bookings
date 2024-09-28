@@ -1,8 +1,9 @@
 // app/booking-details.js
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
+import QRCode from "react-native-qrcode-svg";
 
 const API_URL = "http://localhost:3001";
 
@@ -14,9 +15,10 @@ export default function BookingDetailsScreen() {
 
   useEffect(() => {
     fetchBookingDetails();
-  }, [bookingId, fetchBookingDetails]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookingId]);
 
-  const fetchBookingDetails = useCallback(async () => {
+  const fetchBookingDetails = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -32,13 +34,11 @@ export default function BookingDetailsScreen() {
       setBooking(data);
     } catch (error) {
       console.error("Fetch booking details error:", error);
-      setError(
-        "Failed to fetch ferry reservation details. Please try again later.",
-      );
+      setError("Failed to fetch ferry reservation details. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [bookingId, userId]);
+  };
 
   if (loading) {
     return (
@@ -100,6 +100,9 @@ export default function BookingDetailsScreen() {
         <Text style={styles.label}>Additional Info:</Text>
         <Text style={styles.value}>{booking.details}</Text>
       </View>
+      <View style={styles.qrCodeContainer}>
+        <QRCode value={booking.ticketUuid} size={200} />
+      </View>
     </ScrollView>
   );
 }
@@ -144,5 +147,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 16,
     textAlign: "center",
+  },
+  qrCodeContainer: {
+    alignItems: "center",
+    marginTop: 20,
   },
 });
