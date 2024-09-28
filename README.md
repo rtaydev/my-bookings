@@ -34,7 +34,7 @@ There are other users in the mock server to find
 - `app/booking-details.js`: Booking Details screen
 - `server/mocks/handles.js`: The mock API handlers
 
-The app currently fetches booking data from a mock API endpoint: `http://localhost:3001/api/bookings`. This is in 
+The app currently fetches booking data from a mock API endpoint: `http://localhost:3001/api/bookings`. This is intended to simulate a real-world API, so there may be delays in fetching data.
 
 ## Tasks
 
