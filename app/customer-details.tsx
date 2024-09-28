@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchBookings } from "../store/slices/bookingSlice";
 import { View, Text, ActivityIndicator } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store"; // Adjust this import path as needed
+import { fetchBookings } from "../store/slices/bookingSlice"; // Adjust this import path as needed
+import { useLocalSearchParams } from "expo-router";
 
-export default function CustomerDetailsScreen() {
+const CustomerDetailsScreen = () => {
   const dispatch = useDispatch();
-  const { futureBookings, historicBookings, loading, error } = useSelector(
-    (state) => state.bookings,
+  const { loading, error, futureBookings, historicBookings } = useSelector(
+    (state: RootState) => state.bookings,
   );
   const { surname, bookingReference } = useLocalSearchParams();
 
@@ -15,23 +17,35 @@ export default function CustomerDetailsScreen() {
   }, [dispatch, surname, bookingReference]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <ActivityIndicator
+        testID="loading-indicator"
+        size="large"
+        color="#0000ff"
+      />
+    );
   }
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    return <Text testID="error-message">Error: {error}</Text>;
   }
 
   return (
     <View>
       <Text>Future Bookings:</Text>
       {futureBookings.map((booking) => (
-        <Text key={booking.id}>{booking.title}</Text>
+        <Text key={booking.id} testID={`future-booking-${booking.id}`}>
+          {booking.title}
+        </Text>
       ))}
       <Text>Historic Bookings:</Text>
       {historicBookings.map((booking) => (
-        <Text key={booking.id}>{booking.title}</Text>
+        <Text key={booking.id} testID={`historic-booking-${booking.id}`}>
+          {booking.title}
+        </Text>
       ))}
     </View>
   );
-}
+};
+
+export default CustomerDetailsScreen;

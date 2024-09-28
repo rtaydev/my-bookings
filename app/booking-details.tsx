@@ -1,6 +1,11 @@
-// app/booking-details.js
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import QRCode from "react-native-qrcode-svg";
@@ -14,46 +19,39 @@ export default function BookingDetailsScreen() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchBookingDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookingId]);
+    const fetchBookingDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(
+          `${API_URL}/users/${userId}/bookings/${bookingId}`,
+        );
 
-  const fetchBookingDetails = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(
-        `${API_URL}/users/${userId}/bookings/${bookingId}`,
-      );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setBooking(data);
+      } catch (error) {
+        console.error("Fetch booking details error:", error);
+        setError(
+          "Failed to fetch ferry reservation details. Please try again.",
+        );
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const data = await response.json();
-      setBooking(data);
-    } catch (error) {
-      console.error("Fetch booking details error:", error);
-      setError("Failed to fetch ferry reservation details. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchBookingDetails();
+  }, [bookingId, userId]);
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading ferry reservation details...</Text>
-      </View>
-    );
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
+    return <Text testID="error-text">{error}</Text>;
   }
 
   if (!booking) {
