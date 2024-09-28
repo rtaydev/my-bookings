@@ -39,9 +39,11 @@ The app currently fetches booking data from a mock API endpoint: `http://localho
 ## Tasks
 
 1. **Improve Loading on Customer Details Page**
+
    - Implement a more efficient loading mechanism for the customer's bookings.
 
 2. **Offline Capability**
+
    - Implement a solution to allow users to view their bookings when offline.
 
 3. **Add QR Code**
@@ -69,3 +71,84 @@ Your submission will be evaluated based on:
 Please submit your code as a Git repository with clear commit history. Include a brief explanation of your implementation choices and any additional features you've added in the README.
 
 Good luck!
+
+### Changes Made
+
+1. **Improved Loading on Customer Details Page**
+
+   - Implemented a more efficient loading mechanism by using a combination of `ActivityIndicator` and conditional rendering to provide a better user experience during data fetching.
+
+2. **Offline Capability**
+
+   - Integrated `redux-persist` to cache booking data locally, allowing users to view their bookings even when offline.
+   - Updated the `RootLayout` component to include `PersistGate` for persisting the Redux store.
+
+3. **Add QR Code**
+
+   - Added the `react-native-qrcode-svg` dependency to generate and display QR codes for each booking.
+   - Updated the `BookingDetailsScreen` component to include a QR code generated from the `ticketUuid`.
+
+4. **Code Restructuring**
+
+   - Refactored the `CustomerDetailsScreen` and `BookingDetailsScreen` components to improve readability and maintainability.
+   - Moved API URL to a constant for easier configuration and potential future changes.
+
+5. **Mock Server Enhancements**
+
+   - Enhanced the mock server handlers to support the new QR code functionality and offline capabilities.
+
+6. **Documentation**
+   - Updated the README to reflect the new changes and provide clear instructions on how to run the app with the new features.
+
+### Additional Features
+
+1. **Error Handling**
+
+   - Improved error handling in the `BookingDetailsScreen` component to provide more user-friendly error messages.
+
+2. **User Experience**
+
+   - Enhanced the user interface to be more intuitive and responsive, especially when dealing with larger datasets.
+
+3. **Performance Optimization**
+
+   - Optimized data fetching and state management to improve the overall performance of the app.
+
+4. **Linting and Formatting**
+   - Added ESLint and Prettier configurations to ensure code consistency and maintainability.
+
+### Dependencies Added
+
+- `react-native-qrcode-svg`: For generating QR codes.
+- `redux-persist`: For persisting the Redux store and enabling offline capabilities.
+
+### Implementation Choices
+
+- Chose `redux-persist` for its ease of integration with Redux and its ability to persist the store across sessions.
+- Used `react-native-qrcode-svg` for its simplicity and effectiveness in generating QR codes within a React Native environment.
+
+### How to Run
+
+1. Install the new dependencies:
+
+   ```sh
+   npm install
+   ```
+
+2. Start the mock server:
+
+   ```sh
+   npm run server
+   ```
+
+3. Run the app:
+
+   ```sh
+   npm start
+   ```
+
+4. To test offline capabilities, disable your internet connection after the initial data fetch and navigate through the app.
+
+### Conclusion
+
+These changes aim to enhance the functionality, performance, and user experience of the app while ensuring it meets the specified requirements. The added offline capability and QR code generation provide significant value to the end-users.

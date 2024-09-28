@@ -1,10 +1,10 @@
 // app/booking-details.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { format } from 'date-fns';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { format } from "date-fns";
 
-const API_URL = 'http://localhost:3001';
+const API_URL = "http://localhost:3001";
 
 export default function BookingDetailsScreen() {
   const { bookingId, userId } = useLocalSearchParams();
@@ -14,30 +14,38 @@ export default function BookingDetailsScreen() {
 
   useEffect(() => {
     fetchBookingDetails();
-  }, [bookingId]);
+  }, [bookingId, fetchBookingDetails]);
 
-  const fetchBookingDetails = async () => {
+  const fetchBookingDetails = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${API_URL}/users/${userId}/bookings/${bookingId}`);
-      
+      const response = await fetch(
+        `${API_URL}/users/${userId}/bookings/${bookingId}`,
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setBooking(data);
     } catch (error) {
-      console.error('Fetch booking details error:', error);
-      setError('Failed to fetch ferry reservation details. Please try again.');
+      console.error("Fetch booking details error:", error);
+      setError(
+        "Failed to fetch ferry reservation details. Please try again later.",
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId, userId]);
 
   if (loading) {
-    return <View style={styles.container}><Text>Loading ferry reservation details...</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Loading ferry reservation details...</Text>
+      </View>
+    );
   }
 
   if (error) {
@@ -49,12 +57,16 @@ export default function BookingDetailsScreen() {
   }
 
   if (!booking) {
-    return <View style={styles.container}><Text>Ferry reservation not found</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Ferry reservation not found</Text>
+      </View>
+    );
   }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return format(date, 'MMMM d, yyyy');
+    return format(date, "MMMM d, yyyy");
   };
 
   return (
@@ -96,16 +108,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    color: '#333',
+    color: "#333",
   },
   detailContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     padding: 15,
     marginBottom: 10,
     borderRadius: 8,
@@ -120,17 +132,17 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#555',
+    fontWeight: "600",
+    color: "#555",
     marginBottom: 5,
   },
   value: {
     fontSize: 18,
-    color: '#333',
+    color: "#333",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
