@@ -87,6 +87,7 @@ const mockDb = {
   ],
 };
 
+// eslint-disable-next-line no-undef
 const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export default mockDb;
@@ -96,11 +97,11 @@ export const handlers = [
     const { bookingReference, surname } = await request.json();
 
     const foundBookingRef = mockDb.bookings.find(
-      (u) => u.bookingReference === bookingReference
+      (u) => u.bookingReference === bookingReference,
     );
 
     const foundSurname = mockDb.users.find(
-      (u) => u.userId === foundBookingRef.userId
+      (u) => u.userId === foundBookingRef.userId,
     )?.surname;
 
     await wait(300);
@@ -123,12 +124,12 @@ export const handlers = [
       const today = format(new Date(), "yyyy-MM-dd");
 
       const userBookings = mockDb.bookings.filter(
-        (b) => b.userId === userId && b.date >= today
+        (b) => b.userId === userId && b.date >= today,
       );
       await wait(600);
 
       return HttpResponse.json(userBookings);
-    }
+    },
   ),
 
   http.get(
@@ -139,12 +140,12 @@ export const handlers = [
       const today = format(new Date(), "yyyy-MM-dd");
 
       const userBookings = mockDb.bookings.filter(
-        (b) => b.userId === userId && b.date < today
+        (b) => b.userId === userId && b.date < today,
       );
       await wait(800);
 
       return HttpResponse.json(userBookings);
-    }
+    },
   ),
 
   http.get("http://localhost:3001/users/:userId/bookings/:id", ({ params }) => {

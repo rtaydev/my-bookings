@@ -1,21 +1,21 @@
 // app/index.js (Login Screen)
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { router } from 'expo-router';
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { router } from "expo-router";
 
-const API_URL = 'http://localhost:3001';
+const API_URL = "http://localhost:3001";
 
 export default function LoginScreen() {
-  const [surname, setSurname] = useState('');
-  const [bookingReference, setBookingReference] = useState('');
+  const [surname, setSurname] = useState("");
+  const [bookingReference, setBookingReference] = useState("");
 
   const handleLogin = async () => {
     try {
-      console.log('Fetching')      
+      console.log("Fetching");
       const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ surname, bookingReference }),
       });
@@ -23,15 +23,15 @@ export default function LoginScreen() {
 
       if (data.success) {
         router.push({
-          pathname: '/customer-details',
-          params: { surname, bookingReference }
+          pathname: "/customer-details",
+          params: { surname, bookingReference },
         });
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        Alert.alert("Login Failed", data.message || "Invalid credentials");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Error', 'Failed to connect to the server');
+      console.error("Login error:", error);
+      Alert.alert("Error", "Failed to connect to the server");
     }
   };
 
@@ -61,19 +61,19 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   header: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   item: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
 });

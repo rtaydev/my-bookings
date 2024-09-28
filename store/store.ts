@@ -1,22 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { combineReducers } from 'redux';
-import bookingsReducer from './slices/bookingSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
+import bookingsReducer from "./slices/bookingSlice";
 
 const rootReducer = combineReducers({
-	bookings: bookingsReducer,
+  bookings: bookingsReducer,
 });
 
 const persistConfig = {
-	key: 'root',
-	storage,
+  key: "root",
+  storage,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-	reducer: persistedReducer,
+  reducer: persistedReducer,
 });
 
 export const persistor = persistStore(store);
