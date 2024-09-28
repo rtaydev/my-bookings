@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBookings } from './bookingsSlice';
+import { fetchBookings } from '../store/slices/bookingSlice';
 import { View, Text, ActivityIndicator } from 'react-native';
 
 export default function CustomerDetailsScreen() {
