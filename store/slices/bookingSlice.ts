@@ -1,9 +1,18 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "http://localhost:3001";
 
 interface Booking {
-  // Define the structure of a booking object here
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  passengers: number;
+  vehicle: string;
+  bookingReference: string;
+  details: string;
+  ticketUuid: string;
 }
 
 interface FetchBookingsPayload {
@@ -16,9 +25,19 @@ interface FetchBookingsResponse {
   historicBookings: Booking[];
 }
 
+interface FetchBookingDetailsPayload {
+  userId: string;
+  bookingId: string;
+}
+
+interface FetchBookingDetailsResponse {
+  booking: Booking;
+}
+
 interface BookingsState {
   futureBookings: Booking[];
   historicBookings: Booking[];
+  booking: Booking | null;
   loading: boolean;
   error: string | null;
 }
@@ -49,9 +68,21 @@ export const fetchBookings = createAsyncThunk<
   return { futureBookings, historicBookings };
 });
 
+export const fetchBookingDetails = createAsyncThunk<
+  FetchBookingDetailsResponse,
+  FetchBookingDetailsPayload
+>("bookings/fetchBookingDetails", async ({ userId, bookingId }) => {
+  const response = await fetch(
+    `${API_URL}/users/${userId}/bookings/${bookingId}`,
+  );
+  const booking = await response.json();
+  return { booking };
+});
+
 const initialState: BookingsState = {
   futureBookings: [],
   historicBookings: [],
+  booking: null,
   loading: false,
   error: null,
 };
@@ -77,8 +108,27 @@ const bookingsSlice = createSlice({
       .addCase(fetchBookings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch bookings";
+      })
+      .addCase(fetchBookingDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchBookingDetails.fulfilled,
+        (state, action: PayloadAction<FetchBookingDetailsResponse>) => {
+          state.loading = false;
+          state.booking = action.payload.booking;
+        },
+      )
+      .addCase(fetchBookingDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch booking details";
       });
   },
 });
+
+export const selectBooking = (state: RootState) => state.bookings.booking;
+export const selectLoading = (state: RootState) => state.bookings.loading;
+export const selectError = (state: RootState) => state.bookings.error;
 
 export default bookingsSlice.reducer;

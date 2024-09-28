@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -9,42 +9,24 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import QRCode from "react-native-qrcode-svg";
-
-const API_URL = "http://localhost:3001";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchBookingDetails,
+  selectBooking,
+  selectLoading,
+  selectError,
+} from "@/store/slices/bookingSlice";
 
 export default function BookingDetailsScreen() {
   const { bookingId, userId } = useLocalSearchParams();
-  const [booking, setBooking] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const booking = useSelector(selectBooking);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
-    const fetchBookingDetails = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch(
-          `${API_URL}/users/${userId}/bookings/${bookingId}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setBooking(data);
-      } catch (error) {
-        console.error("Fetch booking details error:", error);
-        setError(
-          "Failed to fetch ferry reservation details. Please try again.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookingDetails();
-  }, [bookingId, userId]);
+    dispatch(fetchBookingDetails({ userId, bookingId }));
+  }, [dispatch, bookingId, userId]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -99,7 +81,7 @@ export default function BookingDetailsScreen() {
         <Text style={styles.value}>{booking.details}</Text>
       </View>
       <View style={styles.qrCodeContainer}>
-        <QRCode value={booking.ticketUuid} size={200} />
+        <QRCode testID="qr-code" value={booking.ticketUuid} size={200} />
       </View>
     </ScrollView>
   );

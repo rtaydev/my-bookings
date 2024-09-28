@@ -93,6 +93,18 @@ const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 export default mockDb;
 
 export const handlers = [
+  http.post(
+    "http://192.168.1.83:8081/symbolicate",
+    async ({ request, response, ctx }) => {
+      return response(
+        ctx.status(200),
+        ctx.json({
+          success: true,
+          message: "Symbolication successful",
+        }),
+      );
+    },
+  ),
   http.post("http://localhost:3001/login", async ({ request }) => {
     const { bookingReference, surname } = await request.json();
 

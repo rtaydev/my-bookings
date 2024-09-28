@@ -8,8 +8,8 @@ import bookingsReducer from "@/store/slices/bookingSlice"; // Adjust this import
 // Mock the expo-router hook
 jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => ({
-    surname: "Test",
-    bookingReference: "123",
+    surname: "Smith",
+    bookingReference: "ABC123",
   })),
 }));
 
@@ -60,10 +60,9 @@ describe("CustomerDetailsScreen", () => {
       </Provider>,
     );
     expect(getByTestId("error-message")).toBeTruthy();
-    expect(getByTestId("error-message").props.children).toEqual([
-      "Error: ",
+    expect(getByTestId("error-message").props.children).toEqual(
       "Error fetching bookings",
-    ]);
+    );
   });
 
   it("renders future and historic bookings", () => {
