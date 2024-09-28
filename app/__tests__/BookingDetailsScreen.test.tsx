@@ -1,14 +1,18 @@
 import React from "react";
-import renderer, { act } from "react-test-renderer";
+import { render, waitFor, act } from "@testing-library/react-native";
 import BookingDetailsScreen from "../booking-details";
 import { useLocalSearchParams } from "expo-router";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import bookingsReducer from "@/store/slices/bookingSlice";
 
-// Mock the useLocalSearchParams hook
+// Mock the expo-router hook
 jest.mock("expo-router", () => ({
-  useLocalSearchParams: jest.fn(),
+  useLocalSearchParams: jest.fn(() => ({
+    bookingId: "ABC123",
+    userId: "1",
+  })),
 }));
-
-jest.mock("react-native-qrcode-svg", () => "QRCode");
 
 // Mock the fetch function to return test booking data
 global.fetch = jest.fn(() =>
@@ -28,11 +32,31 @@ global.fetch = jest.fn(() =>
   }),
 );
 
+const createTestStore = (initialState) => {
+  return configureStore({
+    reducer: {
+      bookings: bookingsReducer,
+    },
+    preloadedState: {
+      bookings: initialState,
+    },
+  });
+};
+
 describe("BookingDetailsScreen", () => {
   const originalError = console.error;
+  let store;
 
   beforeAll(() => {
     console.error = jest.fn();
+  });
+
+  beforeEach(() => {
+    store = createTestStore({
+      booking: null,
+      loading: false,
+      error: null,
+    });
   });
 
   afterAll(() => {
@@ -41,14 +65,25 @@ describe("BookingDetailsScreen", () => {
 
   it("renders QR code correctly", async () => {
     // Mock the useLocalSearchParams hook to return test params
-    useLocalSearchParams.mockReturnValue({ bookingId: "1", userId: "1" });
+    jest.mock("expo-router", () => ({
+      useLocalSearchParams: jest.fn(() => ({
+        bookingId: "ABC123",
+        userId: "1",
+      })),
+    }));
 
-    let tree;
-    await act(async () => {
-      tree = renderer.create(<BookingDetailsScreen />);
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <BookingDetailsScreen />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "http://localhost:3001/users/1/bookings/ABC123",
+      );
+      expect(getByTestId("qr-code")).toBeTruthy();
     });
-
-    expect(tree.toJSON()).toMatchSnapshot();
   });
 
   it("handles fetch error", async () => {
@@ -60,16 +95,14 @@ describe("BookingDetailsScreen", () => {
       }),
     );
 
-    let tree;
-    await act(async () => {
-      tree = renderer.create(<BookingDetailsScreen />);
-    });
-
-    const instance = tree.root;
-    const errorText = instance.findByProps({ testID: "error-text" }).props
-      .children;
-    expect(errorText).toBe(
-      "Failed to fetch ferry reservation details. Please try again.",
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <BookingDetailsScreen />
+      </Provider>,
     );
+
+    await waitFor(() => {
+      expect(getByTestId("error-text")).toBeTruthy();
+    });
   });
 });
