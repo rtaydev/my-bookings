@@ -5,8 +5,9 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
+  Button,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { format } from "date-fns";
 import QRCode from "react-native-qrcode-svg";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,13 +17,21 @@ import {
   selectLoading,
   selectError,
 } from "@/store/slices/bookingSlice";
+import { RootState } from "@/store/store";
+import { Booking } from "@/types";
 
 export default function BookingDetailsScreen() {
-  const { bookingId, userId } = useLocalSearchParams();
+  const { bookingId, userId } = useLocalSearchParams() as {
+    bookingId: string;
+    userId: string;
+  };
   const dispatch = useDispatch();
-  const booking = useSelector(selectBooking);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const booking = useSelector((state: RootState) =>
+    selectBooking(state),
+  ) as Booking | null;
+  const loading = useSelector((state: RootState) => selectLoading(state));
+  const error = useSelector((state: RootState) => selectError(state));
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchBookingDetails({ userId, bookingId }));
@@ -44,13 +53,14 @@ export default function BookingDetailsScreen() {
     );
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "MMMM d, yyyy");
   };
 
   return (
     <ScrollView style={styles.container}>
+      <Button testID="back-button" title="Back" onPress={() => router.back()} />
       <Text style={styles.header}>Ferry Reservation Details</Text>
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Booking Reference:</Text>

@@ -76,49 +76,54 @@ Good luck!
 
 1. **Improved Loading on Customer Details Page**
 
-   - Implemented a more efficient loading mechanism by using a combination of `ActivityIndicator` and conditional rendering to provide a better user experience during data fetching.
+   - Implemented a more efficient loading mechanism by using a combination of `ActivityIndicator` and conditional rendering to provide a better user experience during data fetching. This ensures that users are visually informed about the loading state and reduces the perceived waiting time.
 
 2. **Offline Capability**
 
-   - Integrated `redux-persist` to cache booking data locally, allowing users to view their bookings even when offline.
-   - Updated the `RootLayout` component to include `PersistGate` for persisting the Redux store.
+   - Integrated `redux-persist` to cache booking data locally, allowing users to view their bookings even when offline. This was achieved by configuring the Redux store to use `redux-persist` and setting up the `PersistGate` in the `RootLayout` component to delay the rendering of the app's UI until the persisted state has been retrieved and saved to Redux.
 
 3. **Add QR Code**
 
-   - Added the `react-native-qrcode-svg` dependency to generate and display QR codes for each booking.
-   - Updated the `BookingDetailsScreen` component to include a QR code generated from the `ticketUuid`.
+   - Added the `react-native-qrcode-svg` dependency to generate and display QR codes for each booking. The `BookingDetailsScreen` component was updated to include a QR code generated from the `ticketUuid`, providing users with a scannable code for their booking.
 
 4. **Code Restructuring**
 
-   - Refactored the `CustomerDetailsScreen` and `BookingDetailsScreen` components to improve readability and maintainability.
-   - Moved API URL to a constant for easier configuration and potential future changes.
+   - Refactored the `CustomerDetailsScreen` and `BookingDetailsScreen` components to improve readability and maintainability. This involved breaking down large components into smaller, reusable components and organizing the code in a more logical manner.
+   - Moved the API URL to a constant file for easier configuration and potential future changes, ensuring that the API endpoint can be updated in a single location without modifying multiple files.
 
 5. **Mock Server Enhancements**
 
-   - Enhanced the mock server handlers to support the new QR code functionality and offline capabilities.
+   - Enhanced the mock server handlers to support the new QR code functionality and offline capabilities. This included updating the mock API responses to include the `ticketUuid` field and ensuring that the mock server can simulate offline scenarios.
 
 6. **Documentation**
-   - Updated the README to reflect the new changes and provide clear instructions on how to run the app with the new features.
+
+   - Updated the README to reflect the new changes and provide clear instructions on how to run the app with the new features. This includes detailed steps for setting up the development environment, running the app, and testing the offline capabilities.
+
+7. **Styling/Navigation**
+
+   - Improved the styling and navigation of the application to enhance the overall user experience and visual appeal. This involved updating the styles to be more consistent and modern, as well as improving the navigation flow to make it more intuitive for users.
 
 ### Additional Features
 
 1. **Error Handling**
 
-   - Improved error handling in the `BookingDetailsScreen` component to provide more user-friendly error messages.
+   - Improved error handling in the `BookingDetailsScreen` component to provide more user-friendly error messages. This ensures that users are informed about any issues that occur during data fetching and provides guidance on how to resolve them.
 
 2. **User Experience**
 
-   - Enhanced the user interface to be more intuitive and responsive, especially when dealing with larger datasets.
+   - Enhanced the user interface to be more intuitive and responsive, especially when dealing with larger datasets. This includes optimizing the layout and interactions to ensure a smooth and pleasant user experience.
 
 3. **Performance Optimization**
 
-   - Optimized data fetching and state management to improve the overall performance of the app.
+   - Optimized data fetching and state management to improve the overall performance of the app. This involved using memoization techniques and optimizing the Redux selectors to reduce unnecessary re-renders and improve the app's responsiveness.
 
 4. **Linting and Formatting**
-   - Added ESLint and Prettier configurations to ensure code consistency and maintainability.
+
+   - Added ESLint and Prettier configurations to ensure code consistency and maintainability. This helps to enforce coding standards and automatically format the code, making it easier to read and maintain.
 
 5. **Testing**
-   - Added basic unit tests for the components and reducers to ensure the app's functionality.
+
+   - Added basic unit tests for the components and reducers to ensure the app's functionality. This includes testing the key functionalities and edge cases to ensure the app behaves as expected.
 
 ### Dependencies Added
 
@@ -127,8 +132,8 @@ Good luck!
 
 ### Implementation Choices
 
-- Chose `redux-persist` for its ease of integration with Redux and its ability to persist the store across sessions.
-- Used `react-native-qrcode-svg` for its simplicity and effectiveness in generating QR codes within a React Native environment.
+- Chose `redux-persist` for its ease of integration with Redux and its ability to persist the store across sessions. This ensures that the app's state is saved and restored seamlessly, providing a consistent user experience.
+- Used `react-native-qrcode-svg` for its simplicity and effectiveness in generating QR codes within a React Native environment. This library was chosen for its ease of use and compatibility with the existing codebase.
 
 ### How to Run
 
@@ -138,20 +143,14 @@ Good luck!
    npm install
    ```
 
-2. Start the mock server:
-
-   ```sh
-   npm run server
-   ```
-
-3. Run the app:
+2. Run the app:
 
    ```sh
    npm start
    ```
 
-4. To test offline capabilities, disable your internet connection after the initial data fetch and navigate through the app.
+3. To test offline capabilities, disable your internet connection after the initial data fetch and navigate through the app. This will allow you to verify that the booking data is correctly cached and accessible even when offline.
 
 ### Conclusion
 
-These changes aim to enhance the functionality, performance, and user experience of the app while ensuring it meets the specified requirements. The added offline capability and QR code generation provide significant value to the end-users.
+These changes aim to enhance the functionality, performance, and user experience of the app while ensuring it meets the specified requirements. The added offline capability and QR code generation provide significant value to the end-users, making the app more robust and user-friendly. The improvements in loading mechanisms, error handling, and performance optimization contribute to a smoother and more reliable user experience. The detailed documentation and testing ensure that the app is easy to set up, run, and maintain, providing a solid foundation for future development.

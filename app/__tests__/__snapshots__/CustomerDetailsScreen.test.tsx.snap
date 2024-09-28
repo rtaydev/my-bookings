@@ -1,0 +1,243 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomerDetailsScreen matches the snapshot 1`] = `
+<View
+  style={
+    {
+      "flex": 1,
+      "padding": 20,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "marginBottom": 20,
+      }
+    }
+  >
+    Your Ferry Reservations
+  </Text>
+  <RCTScrollView
+    data={
+      [
+        {
+          "id": "1",
+          "title": "Future Booking",
+        },
+      ]
+    }
+    getItem={[Function]}
+    getItemCount={[Function]}
+    keyExtractor={[Function]}
+    onContentSizeChange={[Function]}
+    onLayout={[Function]}
+    onMomentumScrollBegin={[Function]}
+    onMomentumScrollEnd={[Function]}
+    onScroll={[Function]}
+    onScrollBeginDrag={[Function]}
+    onScrollEndDrag={[Function]}
+    removeClippedSubviews={false}
+    renderItem={[Function]}
+    scrollEventThrottle={0.0001}
+    stickyHeaderIndices={[]}
+    viewabilityConfigCallbackPairs={[]}
+  >
+    <View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={null}
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "backgroundColor": "#f9f9f9",
+              "borderRadius": 5,
+              "marginVertical": 8,
+              "opacity": 1,
+              "padding": 20,
+            }
+          }
+          testID="future-booking-1"
+        >
+          <Text
+            style={
+              {
+                "fontSize": 18,
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Future Booking
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#666",
+                "fontSize": 14,
+              }
+            }
+          >
+             at 
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#666",
+                "fontSize": 14,
+              }
+            }
+          >
+             passengers, 
+          </Text>
+        </View>
+      </View>
+    </View>
+  </RCTScrollView>
+  <Text
+    style={
+      {
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "marginBottom": 20,
+      }
+    }
+  >
+    Your Historic Reservations
+  </Text>
+  <RCTScrollView
+    data={
+      [
+        {
+          "id": "2",
+          "title": "Historic Booking",
+        },
+      ]
+    }
+    getItem={[Function]}
+    getItemCount={[Function]}
+    keyExtractor={[Function]}
+    onContentSizeChange={[Function]}
+    onLayout={[Function]}
+    onMomentumScrollBegin={[Function]}
+    onMomentumScrollEnd={[Function]}
+    onScroll={[Function]}
+    onScrollBeginDrag={[Function]}
+    onScrollEndDrag={[Function]}
+    removeClippedSubviews={false}
+    renderItem={[Function]}
+    scrollEventThrottle={0.0001}
+    stickyHeaderIndices={[]}
+    viewabilityConfigCallbackPairs={[]}
+  >
+    <View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={null}
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "backgroundColor": "#f9f9f9",
+              "borderRadius": 5,
+              "marginVertical": 8,
+              "opacity": 1,
+              "padding": 20,
+            }
+          }
+          testID="historic-booking-2"
+        >
+          <Text
+            style={
+              {
+                "fontSize": 18,
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Historic Booking
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#666",
+                "fontSize": 14,
+              }
+            }
+          >
+             at 
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#666",
+                "fontSize": 14,
+              }
+            }
+          >
+             passengers, 
+          </Text>
+        </View>
+      </View>
+    </View>
+  </RCTScrollView>
+</View>
+`;

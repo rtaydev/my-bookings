@@ -9,12 +9,17 @@ import {
 import { useLocalSearchParams, router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBookings } from "@/store/slices/bookingSlice";
+import { RootState } from "@/store/store";
+import { Booking } from "@/types";
 
 export default function CustomerDetailsScreen() {
-  const { surname, bookingReference } = useLocalSearchParams();
+  const { surname, bookingReference } = useLocalSearchParams() as {
+    surname: string;
+    bookingReference: string;
+  };
   const dispatch = useDispatch();
   const { futureBookings, historicBookings, loading, error } = useSelector(
-    (state) => state.bookings,
+    (state: RootState) => state.bookings,
   );
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export default function CustomerDetailsScreen() {
         <FlatList
           data={futureBookings}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Booking }) => (
             <TouchableOpacity
               style={styles.item}
               onPress={() =>
@@ -82,7 +87,7 @@ export default function CustomerDetailsScreen() {
           <FlatList
             data={historicBookings}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
+            renderItem={({ item }: { item: Booking }) => (
               <TouchableOpacity
                 style={styles.item}
                 onPress={() =>

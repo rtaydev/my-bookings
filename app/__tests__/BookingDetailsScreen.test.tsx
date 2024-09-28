@@ -1,16 +1,19 @@
 import React from "react";
-import { render, waitFor, act } from "@testing-library/react-native";
+import { render, waitFor, fireEvent, act } from "@testing-library/react-native";
 import BookingDetailsScreen from "../booking-details";
-import { useLocalSearchParams } from "expo-router";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import bookingsReducer from "@/store/slices/bookingSlice";
 
-// Mock the expo-router hook
+// Mock the expo-router hooks
+const mockBack = jest.fn();
 jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => ({
     bookingId: "ABC123",
     userId: "1",
+  })),
+  useRouter: jest.fn(() => ({
+    back: mockBack,
   })),
 }));
 
@@ -57,6 +60,8 @@ describe("BookingDetailsScreen", () => {
       loading: false,
       error: null,
     });
+
+    jest.clearAllMocks();
   });
 
   afterAll(() => {
@@ -64,14 +69,6 @@ describe("BookingDetailsScreen", () => {
   });
 
   it("renders QR code correctly", async () => {
-    // Mock the useLocalSearchParams hook to return test params
-    jest.mock("expo-router", () => ({
-      useLocalSearchParams: jest.fn(() => ({
-        bookingId: "ABC123",
-        userId: "1",
-      })),
-    }));
-
     const { getByTestId } = render(
       <Provider store={store}>
         <BookingDetailsScreen />
@@ -104,5 +101,43 @@ describe("BookingDetailsScreen", () => {
     await waitFor(() => {
       expect(getByTestId("error-text")).toBeTruthy();
     });
+  });
+
+  it("navigates back when back button is pressed", async () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <BookingDetailsScreen />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "http://localhost:3001/users/1/bookings/ABC123",
+      );
+    });
+
+    await act(async () => {
+      const backButton = getByTestId("back-button");
+      expect(backButton).toBeTruthy();
+      fireEvent.press(backButton);
+    });
+
+    expect(mockBack).toHaveBeenCalled();
+  });
+
+  it("matches the snapshot", async () => {
+    const { toJSON } = render(
+      <Provider store={store}>
+        <BookingDetailsScreen />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "http://localhost:3001/users/1/bookings/ABC123",
+      );
+    });
+
+    expect(toJSON()).toMatchSnapshot();
   });
 });
