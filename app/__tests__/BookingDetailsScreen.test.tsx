@@ -29,6 +29,16 @@ global.fetch = jest.fn(() =>
 );
 
 describe("BookingDetailsScreen", () => {
+  const originalError = console.error;
+
+  beforeAll(() => {
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    console.error = originalError;
+  });
+
   it("renders QR code correctly", async () => {
     // Mock the useLocalSearchParams hook to return test params
     useLocalSearchParams.mockReturnValue({ bookingId: "1", userId: "1" });
@@ -39,5 +49,27 @@ describe("BookingDetailsScreen", () => {
     });
 
     expect(tree.toJSON()).toMatchSnapshot();
+  });
+
+  it("handles fetch error", async () => {
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+      }),
+    );
+
+    let tree;
+    await act(async () => {
+      tree = renderer.create(<BookingDetailsScreen />);
+    });
+
+    const instance = tree.root;
+    const errorText = instance.findByProps({ testID: "error-text" }).props
+      .children;
+    expect(errorText).toBe(
+      "Failed to fetch ferry reservation details. Please try again.",
+    );
   });
 });
