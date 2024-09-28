@@ -131,5 +131,6 @@ const styles = StyleSheet.create({
   qrCodeContainer: {
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 40,
   },
 });
