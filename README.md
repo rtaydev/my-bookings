@@ -21,8 +21,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```
 
 You can log into the app with
- - Surname: Smith
- - Booking ref: ABC123
+
+- Surname: Smith
+- Booking ref: ABC123
 
 There are other users in the mock server to find
 
@@ -38,14 +39,13 @@ The app currently fetches booking data from a mock API endpoint: `http://localho
 ## Tasks
 
 1. **Improve Loading on Customer Details Page**
-   - Implement a more efficient loading mechanism for the customer's bookings.   
+   - Implement a more efficient loading mechanism for the customer's bookings.
 
 2. **Offline Capability**
-   - Implement a solution to allow users to view their bookings when offline.   
+   - Implement a solution to allow users to view their bookings when offline.
 
 3. **Add QR Code**
    - Generate and display a QR code for each booking from the ticketUuid.
-   
 
 ## Guidelines
 

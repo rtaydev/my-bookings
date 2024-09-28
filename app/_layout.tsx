@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import "../msw.polyfills";
-import { server } from "../server/mocks/server";
+import { server } from "../mocks/server";
 
 server.listen();
 
