@@ -1,9 +1,9 @@
 // app.js
-import { server } from './server/mocks/server'
-import App from './app/_layout' // Your main app component
+import { server } from './mocks/server';
+import App from './app/_layout'; // Your main app component
 
 console.log('Listening to mock server');
 
-server.listen()
+server.listen();
 
-export default App
+export default App;
