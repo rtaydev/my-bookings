@@ -1,20 +1,37 @@
 import React, { useEffect } from "react";
 import {
-  View,
   Text,
   FlatList,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
+  ActivityIndicator,
+  useColorScheme,
+  View,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBookings } from "@/store/slices/bookingSlice";
+import { RootState } from "@/store/store";
+import { Booking } from "@/types";
+import { ThemedView } from "@/components/ThemedView";
+import { Colors } from "@/constants/Colors";
+import { ThemedButton } from "@/components/ThemedButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function CustomerDetailsScreen() {
-  const { surname, bookingReference } = useLocalSearchParams();
+  const colorScheme = useColorScheme();
+  const secondaryBackgroundColor =
+    Colors[colorScheme ?? "light"].secondaryBackground;
+  const headerColor = Colors[colorScheme ?? "light"].headingTextColor;
+  const iconColor = Colors[colorScheme ?? "light"].icon;
+
+  const { surname, bookingReference } = useLocalSearchParams() as {
+    surname: string;
+    bookingReference: string;
+  };
   const dispatch = useDispatch();
   const { futureBookings, historicBookings, loading, error } = useSelector(
-    (state) => state.bookings,
+    (state: RootState) => state.bookings,
   );
 
   useEffect(() => {
@@ -23,76 +40,62 @@ export default function CustomerDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.container} testID="loading-indicator">
-        <Text>Loading ferry reservations...</Text>
-      </View>
+      <ThemedView
+        style={[styles.container, styles.centered]}
+        testID="loading-indicator"
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </ThemedView>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <ThemedView style={styles.container}>
         <Text style={styles.errorText} testID="error-message">
           {error}
         </Text>
-        <TouchableOpacity
-          style={styles.retryButton}
+        <Pressable
+          style={[
+            styles.retryButton,
+            { backgroundColor: Colors.light.buttonBackground },
+          ]}
           onPress={() => dispatch(fetchBookings({ surname, bookingReference }))}
         >
           <Text style={styles.retryButtonText}>Retry</Text>
-        </TouchableOpacity>
-      </View>
+        </Pressable>
+      </ThemedView>
     );
   }
 
+  const handlePress = (item: Booking) => {
+    router.push({
+      pathname: "/booking-details",
+      params: { bookingId: item.id, userId: item.userId },
+    });
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Your Ferry Reservations</Text>
+    <ThemedView style={styles.container}>
+      <Text style={[styles.header, { color: headerColor }]}>
+        Your Ferry Reservations
+      </Text>
       {futureBookings.length === 0 ? (
         <Text style={styles.noBookingsText}>No ferry reservations found.</Text>
       ) : (
         <FlatList
           data={futureBookings}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() =>
-                router.push({
-                  pathname: "/booking-details",
-                  params: { bookingId: item.id },
-                })
-              }
+          renderItem={({ item }: { item: Booking }) => (
+            <Pressable
+              style={[
+                styles.item,
+                { backgroundColor: secondaryBackgroundColor },
+              ]}
+              onPress={() => handlePress(item)}
               testID={`future-booking-${item.id}`}
             >
-              <Text style={styles.itemTitle}>{item.title}</Text>
-              <Text style={styles.itemDetails}>
-                {item.date} at {item.time}
-              </Text>
-              <Text style={styles.itemDetails}>
-                {item.passengers} passengers, {item.vehicle}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-      )}
-      {historicBookings.length === 0 ? null : (
-        <>
-          <Text style={styles.header}>Your Historic Reservations</Text>
-          <FlatList
-            data={historicBookings}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.item}
-                onPress={() =>
-                  router.push({
-                    pathname: "/booking-details",
-                    params: { bookingId: item.id, userId: item.userId },
-                  })
-                }
-                testID={`historic-booking-${item.id}`}
-              >
+              <View>
                 <Text style={styles.itemTitle}>{item.title}</Text>
                 <Text style={styles.itemDetails}>
                   {item.date} at {item.time}
@@ -100,12 +103,45 @@ export default function CustomerDetailsScreen() {
                 <Text style={styles.itemDetails}>
                   {item.passengers} passengers, {item.vehicle}
                 </Text>
-              </TouchableOpacity>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color={iconColor} />
+            </Pressable>
+          )}
+        />
+      )}
+      {historicBookings.length === 0 ? null : (
+        <>
+          <Text style={[styles.header, { color: headerColor }]}>
+            Your Historic Reservations
+          </Text>
+          <FlatList
+            data={historicBookings}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }: { item: Booking }) => (
+              <Pressable
+                style={[
+                  styles.item,
+                  { backgroundColor: secondaryBackgroundColor },
+                ]}
+                onPress={() => handlePress(item)}
+                testID={`historic-booking-${item.id}`}
+              >
+                <View>
+                  <Text style={styles.itemTitle}>{item.title}</Text>
+                  <Text style={styles.itemDetails}>
+                    {item.date} at {item.time}
+                  </Text>
+                  <Text style={styles.itemDetails}>
+                    {item.passengers} passengers, {item.vehicle}
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={24} color={iconColor} />
+              </Pressable>
             )}
           />
         </>
       )}
-    </View>
+    </ThemedView>
   );
 }
 
@@ -114,16 +150,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  centered: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
   item: {
-    backgroundColor: "#f9f9f9",
     padding: 20,
     marginVertical: 8,
     borderRadius: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   itemTitle: {
     fontSize: 18,
@@ -139,7 +181,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: "#007AFF",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",

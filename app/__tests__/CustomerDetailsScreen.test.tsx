@@ -81,6 +81,21 @@ describe("CustomerDetailsScreen", () => {
     expect(getByTestId("historic-booking-2")).toBeTruthy();
   });
 
+  it("matches the snapshot", () => {
+    const store = createTestStore({
+      loading: false,
+      error: null,
+      futureBookings: [{ id: "1", title: "Future Booking" }],
+      historicBookings: [{ id: "2", title: "Historic Booking" }],
+    });
+    const { toJSON } = render(
+      <Provider store={store}>
+        <CustomerDetailsScreen />
+      </Provider>,
+    );
+    expect(toJSON()).toMatchSnapshot();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

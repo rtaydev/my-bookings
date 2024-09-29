@@ -5,8 +5,10 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
+  Pressable,
+  useColorScheme,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { format } from "date-fns";
 import QRCode from "react-native-qrcode-svg";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,74 +18,109 @@ import {
   selectLoading,
   selectError,
 } from "@/store/slices/bookingSlice";
+import { RootState } from "@/store/store";
+import { Booking } from "@/types";
+import { ThemedView } from "@/components/ThemedView";
+import { Colors } from "@/constants/Colors";
+import { ThemedButton } from "@/components/ThemedButton";
 
 export default function BookingDetailsScreen() {
-  const { bookingId, userId } = useLocalSearchParams();
+  const colorScheme = useColorScheme();
+  const secondaryBackgroundColor =
+    Colors[colorScheme ?? "light"].secondaryBackground;
+  const headerColor = Colors[colorScheme ?? "light"].headingTextColor;
+  const { bookingId, userId } = useLocalSearchParams() as {
+    bookingId: string;
+    userId: string;
+  };
   const dispatch = useDispatch();
-  const booking = useSelector(selectBooking);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const booking = useSelector((state: RootState) =>
+    selectBooking(state),
+  ) as Booking | null;
+  const loading = useSelector((state: RootState) => selectLoading(state));
+  const error = useSelector((state: RootState) => selectError(state));
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchBookingDetails({ userId, bookingId }));
   }, [dispatch, bookingId, userId]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <ThemedView style={styles.container} testID="loading-indicator">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </ThemedView>
+    );
   }
 
   if (error) {
-    return <Text testID="error-text">{error}</Text>;
+    return (
+      <ThemedView style={styles.container}>
+        <Text style={styles.errorText} testID="error-message">
+          {error}
+        </Text>
+        <Pressable
+          style={styles.retryButton}
+          onPress={() => dispatch(fetchBookings({ surname, bookingReference }))}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </Pressable>
+      </ThemedView>
+    );
   }
 
   if (!booking) {
     return (
-      <View style={styles.container}>
+      <ThemedView style={styles.container}>
         <Text>Ferry reservation not found</Text>
-      </View>
+      </ThemedView>
     );
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "MMMM d, yyyy");
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Ferry Reservation Details</Text>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Booking Reference:</Text>
-        <Text style={styles.value}>{booking.bookingReference}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Route:</Text>
-        <Text style={styles.value}>{booking.title}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Date:</Text>
-        <Text style={styles.value}>{formatDate(booking.date)}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Time:</Text>
-        <Text style={styles.value}>{booking.time}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Passengers:</Text>
-        <Text style={styles.value}>{booking.passengers}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Vehicle:</Text>
-        <Text style={styles.value}>{booking.vehicle}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Additional Info:</Text>
-        <Text style={styles.value}>{booking.details}</Text>
-      </View>
-      <View style={styles.qrCodeContainer}>
-        <QRCode testID="qr-code" value={booking.ticketUuid} size={200} />
-      </View>
-    </ScrollView>
+    <ThemedView style={styles.container}>
+      <ThemedButton
+        variant="text"
+        testID="back-button"
+        title="Back"
+        icon="arrow-back"
+        onPress={() => router.back()}
+      />
+      <ScrollView style={styles.scrollContainer}>
+        <Text style={[styles.header, { color: headerColor }]}>
+          Ferry Reservation Details
+        </Text>
+        <View
+          style={[
+            styles.detailContainer,
+            { backgroundColor: secondaryBackgroundColor },
+          ]}
+        >
+          <Text style={styles.label}>Booking Reference:</Text>
+          <Text style={styles.value}>{booking.bookingReference}</Text>
+          <Text style={styles.label}>Route:</Text>
+          <Text style={styles.value}>{booking.title}</Text>
+          <Text style={styles.label}>Date:</Text>
+          <Text style={styles.value}>{formatDate(booking.date)}</Text>
+          <Text style={styles.label}>Time:</Text>
+          <Text style={styles.value}>{booking.time}</Text>
+          <Text style={styles.label}>Passengers:</Text>
+          <Text style={styles.value}>{booking.passengers}</Text>
+          <Text style={styles.label}>Vehicle:</Text>
+          <Text style={styles.value}>{booking.vehicle}</Text>
+          <Text style={styles.label}>Additional Info:</Text>
+          <Text style={styles.value}>{booking.details}</Text>
+        </View>
+        <View style={styles.qrCodeContainer}>
+          <QRCode testID="qr-code" value={booking.ticketUuid} size={200} />
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
@@ -91,33 +128,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+  },
+  scrollContainer: {
+    flex: 1,
+    marginTop: 20,
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333",
   },
   detailContainer: {
-    backgroundColor: "#ffffff",
-    padding: 15,
     marginBottom: 10,
     borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    padding: 20,
   },
   label: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#555",
-    marginBottom: 5,
+    fontWeight: "700",
+    marginTop: 8,
   },
   value: {
     fontSize: 18,
@@ -130,6 +159,7 @@ const styles = StyleSheet.create({
   },
   qrCodeContainer: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 40,
+    marginBottom: 40,
   },
 });
