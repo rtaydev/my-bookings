@@ -30,6 +30,7 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
   >
     Your Ferry Reservations
   </Text>
+<<<<<<< HEAD
   <RCTScrollView
     data={
       [
@@ -322,5 +323,17 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
       </View>
     </View>
   </RCTScrollView>
+=======
+  <Text
+    style={
+      {
+        "fontSize": 16,
+        "fontStyle": "italic",
+      }
+    }
+  >
+    No ferry reservations found.
+  </Text>
+>>>>>>> 022d03eea3174df62a1b5f005f001120b0798f09
 </View>
 `;

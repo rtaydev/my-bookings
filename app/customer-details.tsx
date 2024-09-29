@@ -10,12 +10,16 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBookings } from "@/store/slices/bookingSlice";
+import { clearBookingsCache, fetchBookings } from "@/store/slices/bookingSlice";
 import { RootState } from "@/store/store";
 import { Booking } from "@/types";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import {
+  setSearchParams,
+  clearSearchParams,
+} from "@/store/slices/searchParamsSlice";
 
 export default function CustomerDetailsScreen() {
   const colorScheme = useColorScheme();
@@ -32,11 +36,25 @@ export default function CustomerDetailsScreen() {
   const dispatch = useDispatch();
   const { futureBookings, historicBookings, loading, error, lastFetched } =
     useSelector((state: RootState) => state.bookings);
+  const { surname: storedSurname, bookingReference: storedBookingReference } =
+    useSelector((state: RootState) => state.searchParams);
 
   useEffect(() => {
+    const hasSearchParamsChanged = () => {
+      return (
+        storedSurname !== surname || storedBookingReference !== bookingReference
+      );
+    };
+
+    if (hasSearchParamsChanged()) {
+      dispatch(clearBookingsCache());
+      dispatch(clearSearchParams());
+      dispatch(setSearchParams({ surname, bookingReference }));
+    }
+
     const isDataValid = () => {
       const now = new Date().getTime();
-      const cacheDuration = 1000 * 60 * 5; // 5 minutes
+      const cacheDuration = 1000 * 60 * 5;
       return lastFetched && now - lastFetched < cacheDuration;
     };
 
@@ -54,6 +72,8 @@ export default function CustomerDetailsScreen() {
     futureBookings,
     historicBookings,
     lastFetched,
+    storedSurname,
+    storedBookingReference,
   ]);
 
   const handlePress = useCallback((item: Booking) => {

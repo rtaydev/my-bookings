@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "@/store/store";
 
 const API_URL = "http://localhost:3001";
 
@@ -92,7 +92,13 @@ const initialState: BookingsState = {
 const bookingsSlice = createSlice({
   name: "bookings",
   initialState,
-  reducers: {},
+  reducers: {
+    clearBookingsCache: (state) => {
+      state.futureBookings = [];
+      state.historicBookings = [];
+      state.lastFetched = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBookings.pending, (state) => {
@@ -134,4 +140,5 @@ export const selectBooking = (state: RootState) => state.bookings.booking;
 export const selectLoading = (state: RootState) => state.bookings.loading;
 export const selectError = (state: RootState) => state.bookings.error;
 
+export const { clearBookingsCache } = bookingsSlice.actions;
 export default bookingsSlice.reducer;

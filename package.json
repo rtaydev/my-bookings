@@ -16,7 +16,7 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|react-native-reanimated|expo|expo-router|@expo|@react-native|@react-navigation|react-redux|@react-redux)"
+      "node_modules/(?!react-native|react-native-reanimated|expo|expo-router|@expo|@react-native|@react-navigation|react-redux|@react-redux|@react-native-async-storage/async-storage)"
     ],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
