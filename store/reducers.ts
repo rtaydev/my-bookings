@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import bookingsReducer from "./slices/bookingSlice";
-// Import other slices as needed
+import searchParamsReducer from "./slices/searchParamsSlice";
 
 const rootReducer = combineReducers({
   bookings: bookingsReducer,
-  // Add other reducers here
+  searchParams: searchParamsReducer,
 });
 
 export default rootReducer;

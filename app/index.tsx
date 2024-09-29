@@ -35,7 +35,6 @@ export default function LoginScreen() {
     if (!validateForm()) return;
 
     try {
-      console.log("Fetching");
       const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
