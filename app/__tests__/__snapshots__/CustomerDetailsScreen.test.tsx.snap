@@ -30,13 +30,19 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
   >
     Your Ferry Reservations
   </Text>
-<<<<<<< HEAD
   <RCTScrollView
     data={
       [
         {
+          "bookingReference": "ABC123",
+          "date": "2024-11-05",
+          "details": "Standard vehicle ferry crossing",
           "id": "1",
-          "title": "Future Booking",
+          "passengers": 2,
+          "ticketUuid": "8f7e6d5c-4b3a-2a1e-9f8d-7c6b5a4e3d2c",
+          "time": "08:00",
+          "title": "Dover to Calais",
+          "vehicle": "Car",
         },
       ]
     }
@@ -121,7 +127,7 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
-              Future Booking
+              Dover to Calais
             </Text>
             <Text
               style={
@@ -131,7 +137,9 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
+              2024-11-05
                at 
+              08:00
             </Text>
             <Text
               style={
@@ -141,7 +149,9 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
+              2
                passengers, 
+              Car
             </Text>
           </View>
           <Text
@@ -189,8 +199,15 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
     data={
       [
         {
+          "bookingReference": "DEF456",
+          "date": "2024-10-05",
+          "details": "Return journey - Standard vehicle ferry crossing",
           "id": "2",
-          "title": "Historic Booking",
+          "passengers": 2,
+          "ticketUuid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+          "time": "18:00",
+          "title": "Calais to Dover",
+          "vehicle": "Car",
         },
       ]
     }
@@ -275,7 +292,7 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
-              Historic Booking
+              Calais to Dover
             </Text>
             <Text
               style={
@@ -285,7 +302,9 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
+              2024-10-05
                at 
+              18:00
             </Text>
             <Text
               style={
@@ -295,7 +314,9 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
                 }
               }
             >
+              2
                passengers, 
+              Car
             </Text>
           </View>
           <Text
@@ -323,17 +344,5 @@ exports[`CustomerDetailsScreen matches the snapshot 1`] = `
       </View>
     </View>
   </RCTScrollView>
-=======
-  <Text
-    style={
-      {
-        "fontSize": 16,
-        "fontStyle": "italic",
-      }
-    }
-  >
-    No ferry reservations found.
-  </Text>
->>>>>>> 022d03eea3174df62a1b5f005f001120b0798f09
 </View>
 `;

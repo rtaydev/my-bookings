@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import {
   Text,
   FlatList,
@@ -39,6 +39,8 @@ export default function CustomerDetailsScreen() {
   const { surname: storedSurname, bookingReference: storedBookingReference } =
     useSelector((state: RootState) => state.searchParams);
 
+  const [initialLoading, setInitialLoading] = useState(true);
+
   useEffect(() => {
     const hasSearchParamsChanged = () => {
       return (
@@ -46,25 +48,33 @@ export default function CustomerDetailsScreen() {
       );
     };
 
-    if (hasSearchParamsChanged()) {
-      dispatch(clearBookingsCache());
-      dispatch(clearSearchParams());
-      dispatch(setSearchParams({ surname, bookingReference }));
-    }
+    const fetchData = async () => {
+      try {
+        if (hasSearchParamsChanged()) {
+          dispatch(clearBookingsCache());
+          dispatch(clearSearchParams());
+          dispatch(setSearchParams({ surname, bookingReference }));
+        }
 
-    const isDataValid = () => {
-      const now = new Date().getTime();
-      const cacheDuration = 1000 * 60 * 5;
-      return lastFetched && now - lastFetched < cacheDuration;
+        const isDataValid = () => {
+          const now = new Date().getTime();
+          const cacheDuration = 1000 * 60 * 5;
+          return lastFetched && now - lastFetched < cacheDuration;
+        };
+
+        if (
+          !isDataValid() &&
+          futureBookings.length === 0 &&
+          historicBookings.length === 0
+        ) {
+          await dispatch(fetchBookings({ surname, bookingReference }));
+        }
+      } finally {
+        setInitialLoading(false);
+      }
     };
 
-    if (
-      !isDataValid() &&
-      futureBookings.length === 0 &&
-      historicBookings.length === 0
-    ) {
-      dispatch(fetchBookings({ surname, bookingReference }));
-    }
+    fetchData();
   }, [
     dispatch,
     surname,
@@ -107,20 +117,6 @@ export default function CustomerDetailsScreen() {
 
   const keyExtractor = useCallback((item: Booking) => item.id, []);
 
-  if (loading) {
-    return (
-      <ThemedView
-        style={[styles.container, styles.centered]}
-        testID="loading-indicator"
-      >
-        <ActivityIndicator
-          size="large"
-          color={Colors[colorScheme ?? "light"].text}
-        />
-      </ThemedView>
-    );
-  }
-
   if (error) {
     return (
       <ThemedView style={styles.container}>
@@ -139,6 +135,20 @@ export default function CustomerDetailsScreen() {
         >
           <Text style={styles.retryButtonText}>Retry</Text>
         </Pressable>
+      </ThemedView>
+    );
+  }
+
+  if (initialLoading || loading) {
+    return (
+      <ThemedView
+        style={[styles.container, styles.centered]}
+        testID="loading-indicator"
+      >
+        <ActivityIndicator
+          size="large"
+          color={Colors[colorScheme ?? "light"].text}
+        />
       </ThemedView>
     );
   }
