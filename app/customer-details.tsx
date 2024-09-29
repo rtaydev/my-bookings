@@ -15,7 +15,6 @@ import { RootState } from "@/store/store";
 import { Booking } from "@/types";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
-import { ThemedButton } from "@/components/ThemedButton";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function CustomerDetailsScreen() {
@@ -44,7 +43,10 @@ export default function CustomerDetailsScreen() {
         style={[styles.container, styles.centered]}
         testID="loading-indicator"
       >
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator
+          size="large"
+          color={Colors[colorScheme ?? "light"].text}
+        />
       </ThemedView>
     );
   }
