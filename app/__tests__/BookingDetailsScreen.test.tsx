@@ -89,6 +89,7 @@ describe("BookingDetailsScreen", () => {
         ok: false,
         status: 404,
         statusText: "Not Found",
+        json: () => Promise.reject(new Error("Error fetching bookings")),
       }),
     );
 
@@ -99,7 +100,10 @@ describe("BookingDetailsScreen", () => {
     );
 
     await waitFor(() => {
-      expect(getByTestId("error-text")).toBeTruthy();
+      expect(getByTestId("error-message")).toBeTruthy();
+      expect(getByTestId("error-message").props.children).toEqual(
+        "Error fetching bookings",
+      );
     });
   });
 
