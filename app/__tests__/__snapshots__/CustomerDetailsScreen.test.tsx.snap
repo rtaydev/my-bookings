@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomerDetailsScreen matches the snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      {
+        "flex": 1,
+        "padding": 20,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontSize": 24,
+          "fontWeight": "bold",
+          "marginBottom": 20,
+        },
+        {
+          "color": "#003083",
+        },
+      ]
+    }
+  >
+    Your Ferry Reservations
+  </Text>
+  <Text
+    style={
+      {
+        "fontSize": 16,
+        "fontStyle": "italic",
+      }
+    }
+  >
+    No ferry reservations found.
+  </Text>
+</View>
+`;
