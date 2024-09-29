@@ -33,6 +33,8 @@ export default function BookingDetailsScreen() {
     bookingId: string;
     userId: string;
   };
+  const errorColor = Colors[colorScheme ?? "light"].error;
+
   const dispatch = useDispatch();
   const booking = useSelector((state: RootState) =>
     selectBooking(state),
@@ -56,7 +58,10 @@ export default function BookingDetailsScreen() {
   if (error) {
     return (
       <ThemedView style={styles.container}>
-        <Text style={styles.errorText} testID="error-message">
+        <Text
+          style={[styles.errorText, { color: errorColor }]}
+          testID="error-message"
+        >
           {error}
         </Text>
         <Pressable

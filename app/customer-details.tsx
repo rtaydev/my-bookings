@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   Text,
   FlatList,
@@ -23,19 +23,69 @@ export default function CustomerDetailsScreen() {
     Colors[colorScheme ?? "light"].secondaryBackground;
   const headerColor = Colors[colorScheme ?? "light"].headingTextColor;
   const iconColor = Colors[colorScheme ?? "light"].icon;
+  const errorColor = Colors[colorScheme ?? "light"].error;
 
   const { surname, bookingReference } = useLocalSearchParams() as {
     surname: string;
     bookingReference: string;
   };
   const dispatch = useDispatch();
-  const { futureBookings, historicBookings, loading, error } = useSelector(
-    (state: RootState) => state.bookings,
-  );
+  const { futureBookings, historicBookings, loading, error, lastFetched } =
+    useSelector((state: RootState) => state.bookings);
 
   useEffect(() => {
-    dispatch(fetchBookings({ surname, bookingReference }));
-  }, [dispatch, surname, bookingReference]);
+    const isDataValid = () => {
+      const now = new Date().getTime();
+      const cacheDuration = 1000 * 60 * 5; // 5 minutes
+      return lastFetched && now - lastFetched < cacheDuration;
+    };
+
+    if (
+      !isDataValid() &&
+      futureBookings.length === 0 &&
+      historicBookings.length === 0
+    ) {
+      dispatch(fetchBookings({ surname, bookingReference }));
+    }
+  }, [
+    dispatch,
+    surname,
+    bookingReference,
+    futureBookings,
+    historicBookings,
+    lastFetched,
+  ]);
+
+  const handlePress = useCallback((item: Booking) => {
+    router.push({
+      pathname: "/booking-details",
+      params: { bookingId: item.id, userId: item.userId },
+    });
+  }, []);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Booking }) => (
+      <Pressable
+        style={[styles.item, { backgroundColor: secondaryBackgroundColor }]}
+        onPress={() => handlePress(item)}
+        testID={`bookings-list-${item.id}`}
+      >
+        <View>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDetails}>
+            {item.date} at {item.time}
+          </Text>
+          <Text style={styles.itemDetails}>
+            {item.passengers} passengers, {item.vehicle}
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={24} color={iconColor} />
+      </Pressable>
+    ),
+    [handlePress, secondaryBackgroundColor, iconColor],
+  );
+
+  const keyExtractor = useCallback((item: Booking) => item.id, []);
 
   if (loading) {
     return (
@@ -54,7 +104,10 @@ export default function CustomerDetailsScreen() {
   if (error) {
     return (
       <ThemedView style={styles.container}>
-        <Text style={styles.errorText} testID="error-message">
+        <Text
+          style={[styles.errorText, { color: errorColor }]}
+          testID="error-message"
+        >
           {error}
         </Text>
         <Pressable
@@ -70,13 +123,6 @@ export default function CustomerDetailsScreen() {
     );
   }
 
-  const handlePress = (item: Booking) => {
-    router.push({
-      pathname: "/booking-details",
-      params: { bookingId: item.id, userId: item.userId },
-    });
-  };
-
   return (
     <ThemedView style={styles.container}>
       <Text style={[styles.header, { color: headerColor }]}>
@@ -87,28 +133,16 @@ export default function CustomerDetailsScreen() {
       ) : (
         <FlatList
           data={futureBookings}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }: { item: Booking }) => (
-            <Pressable
-              style={[
-                styles.item,
-                { backgroundColor: secondaryBackgroundColor },
-              ]}
-              onPress={() => handlePress(item)}
-              testID={`future-booking-${item.id}`}
-            >
-              <View>
-                <Text style={styles.itemTitle}>{item.title}</Text>
-                <Text style={styles.itemDetails}>
-                  {item.date} at {item.time}
-                </Text>
-                <Text style={styles.itemDetails}>
-                  {item.passengers} passengers, {item.vehicle}
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={24} color={iconColor} />
-            </Pressable>
-          )}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          getItemLayout={(data, index) => ({
+            length: 80,
+            offset: 80 * index,
+            index,
+          })}
         />
       )}
       {historicBookings.length === 0 ? null : (
@@ -118,28 +152,16 @@ export default function CustomerDetailsScreen() {
           </Text>
           <FlatList
             data={historicBookings}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }: { item: Booking }) => (
-              <Pressable
-                style={[
-                  styles.item,
-                  { backgroundColor: secondaryBackgroundColor },
-                ]}
-                onPress={() => handlePress(item)}
-                testID={`historic-booking-${item.id}`}
-              >
-                <View>
-                  <Text style={styles.itemTitle}>{item.title}</Text>
-                  <Text style={styles.itemDetails}>
-                    {item.date} at {item.time}
-                  </Text>
-                  <Text style={styles.itemDetails}>
-                    {item.passengers} passengers, {item.vehicle}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={24} color={iconColor} />
-              </Pressable>
-            )}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={5}
+            getItemLayout={(data, index) => ({
+              length: 80,
+              offset: 80 * index,
+              index,
+            })}
           />
         </>
       )}

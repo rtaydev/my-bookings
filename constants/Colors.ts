@@ -19,6 +19,7 @@ export const Colors = {
     buttonText: "#fff",
     border: "#003083",
     headingTextColor: "#003083",
+    error: "#ff0000",
   },
   dark: {
     text: "#fff",
@@ -32,5 +33,6 @@ export const Colors = {
     buttonText: "#003083",
     border: "#efefef",
     headingTextColor: "#fff",
+    error: "#fff",
   },
 };

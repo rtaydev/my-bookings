@@ -77,8 +77,8 @@ describe("CustomerDetailsScreen", () => {
         <CustomerDetailsScreen />
       </Provider>,
     );
-    expect(getByTestId("future-booking-1")).toBeTruthy();
-    expect(getByTestId("historic-booking-2")).toBeTruthy();
+    expect(getByTestId("bookings-list-1")).toBeTruthy();
+    expect(getByTestId("bookings-list-2")).toBeTruthy();
   });
 
   it("matches the snapshot", () => {

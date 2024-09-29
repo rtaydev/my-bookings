@@ -40,6 +40,7 @@ interface BookingsState {
   booking: Booking | null;
   loading: boolean;
   error: string | null;
+  lastFetched: number | null;
 }
 
 export const fetchBookings = createAsyncThunk<
@@ -85,6 +86,7 @@ const initialState: BookingsState = {
   booking: null,
   loading: false,
   error: null,
+  lastFetched: null,
 };
 
 const bookingsSlice = createSlice({
@@ -103,6 +105,7 @@ const bookingsSlice = createSlice({
           state.loading = false;
           state.futureBookings = action.payload.futureBookings;
           state.historicBookings = action.payload.historicBookings;
+          state.lastFetched = new Date().getTime();
         },
       )
       .addCase(fetchBookings.rejected, (state, action) => {
